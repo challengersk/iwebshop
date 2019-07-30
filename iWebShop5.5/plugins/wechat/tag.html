@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	{js:dialog}
+	{js:jquery}
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link href="{webroot:public/css/twitter-bootstrap/3.3.7/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+
+<body>
+<div class="container">
+	<div class="table-responsive">
+    	<table class="table table-bordered">
+    		<caption>
+    		    <a class="btn btn-primary" href='javascript:addTag();'>添加标签</a>
+    		    <a class="btn btn-warning" href='{url:/plugins/wechat_tag_member_list}'>用户标签关联</a>
+    		</caption>
+
+    		<colgroup>
+    			<col width="30%" />
+    			<col width="30%" />
+    			<col />
+    		</colgroup>
+
+    		<thead>
+    			<tr>
+    				<th>标签名称</th>
+    				<th>用户数量</th>
+    				<th>操作</th>
+    			</tr>
+    		</thead>
+
+    		<tbody>
+    		    {foreach:items=$tagData}
+    			<tr>
+    				<td><input type="text" value="{$item['name']}" class="form-control" onchange="updateTag(this,{$item['id']});" /></td>
+    				<td>{$item['count']}</td>
+    				<td>
+    				    <a class="btn btn-success" href="{url:/plugins/wechat_menu/id/$item['id']/name/$item['name']}">设置个性化菜单</a>
+                    	<a class="btn btn-danger" href="javascript:art.dialog.confirm('确定要删除标签？',function(){delTag({$item['id']});});">删除</a>
+    				</td>
+    			</tr>
+    		    {/foreach}
+    		</tbody>
+    	</table>
+	</div>
+</div>
+<script>
+//添加标签
+function addTag()
+{
+	art.dialog.prompt('添加新标签',function(name){
+		if(!name)
+		{
+			alert('请填写标签名称');
+			return;
+		}
+
+		$.getJSON("{url:/plugins/wechat_tag_update}",{"name":name},function(json){
+			if(json.result == 'success')
+			{
+			    window.location.reload();
+			}
+			else
+			{
+			    alert(json.error);
+			}
+		});
+	});
+}
+
+//更新标签
+function updateTag(obj,tagid)
+{
+    $.getJSON("{url:/plugins/wechat_tag_update}",{"id":tagid,"name":obj.value},function(json)
+    {
+        if(json.result == 'success')
+        {
+            art.dialog.tips(json.message);
+        }
+        else
+        {
+            alert(json.error);
+        }
+    });
+}
+
+//删除标签
+function delTag(tagid)
+{
+    $.getJSON("{url:/plugins/wechat_tag_del}",{"id":tagid},function(json)
+    {
+        if(json.result == 'success')
+        {
+            window.location.reload();
+        }
+        else
+        {
+            alert(json.error);
+        }
+    });
+}
+</script>
+</body>
+</html>

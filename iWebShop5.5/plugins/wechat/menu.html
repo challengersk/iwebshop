@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	{js:jquery}
+	{js:dialog}
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="stylesheet" href="{webroot:public/css/twitter-bootstrap/3.3.7/css/bootstrap.min.css}">
+	<link rel="stylesheet" href="{webroot:public/css/font-awesome/4.7.0/css/font-awesome.min.css}">
+	<link rel="stylesheet" href="{echo:$this->wechat->webPath()}css/wx-custom.css">
+</head>
+<body>
+<div class="container">
+    <div class="custom-menu-edit-con">
+		<div class="hbox">
+			<div class="inner-left">
+				<div class="custom-menu-view-con">
+					<div class="custom-menu-view">
+						<div class="custom-menu-view__title">公众号名称</div>
+						<div class="custom-menu-view__body">
+							<div class="weixin-msg-list"><ul class="msg-con"></ul></div>
+						</div>
+						<div id="menuMain" class="custom-menu-view__footer">
+							<div class="custom-menu-view__footer__left"></div>
+							<div class="custom-menu-view__footer__right" ></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="inner-right">
+                <div class="cm-edit-after">
+                    <div class="cm-edit-right-header b-b">
+                        <span id="cm-tit"></span> <a id="delMenu" class="pull-right" href="javascript:;">删除菜单</a>
+                    </div>
+                    <form class="form-horizontal wrapper-md" name="custom_form">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">菜单名称:</label>
+                            <div class="col-sm-5">
+                                <input name="custom_input_title" type="text" class="form-control" ng-model="menuname" value="" placeholder="" ng-maxlength="5">
+                            </div>
+                            <div class="col-sm-5 help-block">
+                                <div ng-show="custom_form.custom_input_title.$dirty&&custom_form.custom_input_title.$invalid-maxlength">字数不超过5个汉字或16个字符</div>
+                                <div class="font_sml" style="display: none;">若无二级菜单，可输入20个汉字或60个字符</div>
+                            </div>
+                        </div>
+                        <div class="form-group" id="radioGroup">
+                            <label class="col-sm-2 control-label">菜单内容:</label>
+                            <div class="col-sm-10 LebelRadio">
+                                <label class="checkbox-inline" style="display:none"><input type="radio" name="radioBtn" value="sendmsg" checked> 发送消息</label>
+                                <label class="checkbox-inline"><input type="radio" name="radioBtn" value="link">跳转网页</label>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="cm-edit-content-con" id="editPage">
+                        <div class="cm-edit-page">
+                            <div class="row">
+                            	<label class="col-sm-6 control-label" style="text-align: left;">粉丝点击该菜单会跳转到以下链接:</label>
+                            </div>
+                            <div class="row">
+                            	<label class="col-sm-2 control-label" style="text-align: left;">页面地址:</label>
+                            	<div class="col-sm-9">
+                            	    <input type="text" name="url" class="form-control" placeholder="认证号才可手动输入地址">
+                            	    <span class="help-block">必填,必须是正确的URL格式</span>
+                            	</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cm-edit-before"><h5>点击左侧菜单进行操作</h5></div>
+			</div>
+		</div>
+    </div>
+    <div class="cm-edit-footer">
+    	<button id="saveBtns" type="button" class="btn btn-info">保存</button>
+    	<button type="button" class="btn btn-default" onclick="window.location.reload();">重置</button>
+    </div>
+</div>
+
+<div id="reminderModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>×</span></button>
+                <h4 class="modal-title">温馨提示</h4>
+            </div>
+
+            <div class="modal-body">
+                <h5>确定添加子菜单？</h5>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info reminder">确定</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{webroot:public/javascript/twitter-bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+<script src="{echo:$this->wechat->webPath()}js/Sortable.js"></script>
+<script src="{echo:$this->wechat->webPath()}js/menu.js"></script>
+<script>
+var menuData = {$menuData};
+var url      = "{url:/plugins/wechat_menu_update}";
+var tagid    = "{$tagid}";
+var menuid   = "{$menuid}";
+</script>
+</body>
+</html>

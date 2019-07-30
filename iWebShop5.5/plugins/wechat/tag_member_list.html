@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	{js:jquery}
+	{js:dialog}
+	{js:form}
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link href="{webroot:public/css/twitter-bootstrap/3.3.7/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+
+<body>
+<div class="container">
+	<table class="table table-bordered">
+		<caption>
+			<form class="form-inline" action="{url:/}" method="get" name="search_member">
+				<input type="hidden" name="controller" value="plugins">
+				<input type="hidden" name="action" value="wechat_tag_member_list">
+				<div class="form-group">
+					<select class="form-control" name="search">
+						<option value="u.username">用户名</option>
+						<option value="m.true_name">姓名</option>
+						<option value="m.mobile">手机</option>
+						<option value="m.email">Email</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<input type="text" class="form-control" name="keywords" placeholder="请输入关键字" value="{$keywords}">
+				</div>
+				{if:$tagData && isset($tagData['tags'])}
+				<div class="form-group">
+					<select class="form-control" name="tagid">
+					    <option value=''>标签筛选</option>
+					    {foreach:items=$tagData['tags'] item=$tagRow}
+					    <option value='{$tagRow['id']}'>{$tagRow['name']}</option>
+					    {/foreach}
+					</select>
+				</div>
+				{/if}
+				<button type="submit" class="btn btn-primary">检索</button>
+			</form>
+		</caption>
+
+		<colgroup>
+			<col width="120px" />
+			<col width="100px" />
+			<col width="120px" />
+			<col width="120px" />
+			<col width="170px" />
+			<col />
+		</colgroup>
+
+		<thead>
+			<tr>
+				<th>用户名</th>
+				<th>姓名</th>
+				<th>手机</th>
+				<th>Email</th>
+				<th>注册日期</th>
+				<th>设置标签</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			{set:$page= (isset($_GET['page'])&&(intval($_GET['page'])>0))?intval($_GET['page']):1;}
+			{query:name=member as m join=left join user as u on m.user_id eq u.id fields=m.user_id,m.true_name,m.mobile,m.time,m.email,u.username where=m.status eq 1 and $where page=$page}
+			{set:$user_ico = $this->user['head_ico']}
+			<tr>
+				<td>
+				    {if:$user_ico}
+				    <img src="{url:/pic/thumb/img/$user_ico/w/100/h/100}" class="img-thumbnail" />
+				    {/if}
+
+				    {$item['username']}
+				</td>
+				<td>{$item['true_name']}</td>
+				<td>{$item['mobile']}</td>
+				<td>{$item['email']}</td>
+				<td>{$item['time']}</td>
+				<td>
+				    {if:$tagData && isset($tagData['tags'])}
+				    {foreach:items=$tagData['tags'] item=$tagRow}
+				    <button type="button" onclick="setTag({$tagRow['id']},{$item['user_id']});" class="btn btn-default btn-sm">{$tagRow['name']}</button>
+				    {/foreach}
+				    {else:}
+				    暂无标签，<a href="{url:/plugins/wechat_tag}">点击添加</a>
+				    {/if}
+				</td>
+			</tr>
+			{/query}
+		</tbody>
+	</table>
+	{$query->getPageBar()}
+</div>
+
+<script>
+$(function()
+{
+	var formObj = new Form('search_member');
+	formObj.init({'search':'{$search}','tagid':'{$tagid}'});
+});
+
+//给用户设置标签
+function setTag(tagid,user_id)
+{
+    $.getJSON("{url:/plugins/wechat_tag_user_update}",{"tagid":tagid,"user_id":user_id},function(json)
+    {
+        if(json.result == 'success')
+        {
+            art.dialog.tips(json.message);
+        }
+        else
+        {
+            alert(json.error);
+        }
+    });
+}
+</script>
+</body>
+</html>

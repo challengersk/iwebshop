@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<title>{$this->_siteConfig->name}</title>
+	{js:jquery}
+	{js:validate}
+	{js:dialog}
+	{js:artTemplate}
+	{js:form}
+	<link type="image/x-icon" href="{webroot:favicon.ico}" rel="icon">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link href="//libs.cdnjs.net/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+	<!--顶部导航 开始-->
+	<nav class="navbar navbar-default" style="margin-bottom:10px;">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a href="{url:/}" class="navbar-brand" title="{echo:$this->_siteConfig->name}">{echo:$this->_siteConfig->name}</a>
+			</div>
+			<ul class="nav navbar-nav navbar-right">
+				{if:$this->user}
+				<li><a href="{url:/simple/logout}">您好{echo:$this->user['username']}，<span class="glyphicon glyphicon-log-out"></span> 安全退出</a></li>
+				{else:}
+				<li><a href="{url:/simple/login}"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
+				<li><a href="{url:/simple/reg}"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
+				{/if}
+				<li><a href="{url:/ucenter/index}">我的账户</a></li>
+				<li><a href="{url:/ucenter/order}">我的订单</a></li>
+				<li><a href="{url:/simple/seller}">申请开店</a></li>
+				<li><a href="{url:/seller/index}">商家管理</a></li>
+			</ul>
+		</div>
+	</nav>
+	<!--顶部导航 结束-->
+
+	<!--商户信息 开始-->
+	<div class="container-fluid" style="border-bottom:1px solid #e7e7e7">
+		<ul class="list-inline">
+			<li>{$sellerRow['true_name']}</li>
+			<li><span class="label label-success">销量：{$sellerRow['sale']}</span></li>
+			<li><span class="label label-info">评分：{echo:statistics::gradeSeller($sellerRow['id'])}</span></li>
+			<li><span class="label label-warning">{echo:join(' ',area::name($sellerRow['province'],$sellerRow['city'],$sellerRow['area']))} {$sellerRow['address']}</span></li>
+			<li>{set:plugin::trigger("onServiceButton",$sellerRow['id'])}</li>
+		</ul>
+	</div>
+	<!--商户信息 结束-->
+
+	<!--店铺模板 开始-->
+	<div class="container-fluid">
+		{viewcontent}
+	</div>
+	<!--店铺模板 结束-->
+
+	<!--页脚 开始-->
+	<div class="container-fluid">
+		<hr/>
+		<div class="container">
+		{echo:IFilter::stripSlash($this->_siteConfig->site_footer_code)}
+		</div>
+	</div>
+	<!--页脚 结束-->
+</body>
+</html>

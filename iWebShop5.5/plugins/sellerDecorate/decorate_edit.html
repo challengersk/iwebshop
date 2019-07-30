@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	{js:jquery}
+	{js:validate}
+	{js:dialog}
+	{js:artTemplate}
+	{js:form}
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link href="//libs.cdnjs.net/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="container">
+	<div class="form-group">
+		<label>选择主题模板：</label>
+		<p class="form-control-static">选择当前系统支持的商家主题模板，进行个性化的显示</p>
+	</div>
+
+	<div class="form-group">
+		<label>主题模板：</label>
+		<select name="sellerTheme" onchange="changeTheme();" class="form-control" style="width:30%">
+			<option value="">无</option>
+			{foreach:items=$themeData item=$theme}
+			<option value="{$theme}" {if:$sellerDeRow && $theme==$sellerDeRow['theme']}selected="selected"{/if}>{$theme}</option>
+			{/foreach}
+		</select>
+	</div>
+
+	<div class="form-group">
+		<input type="button" class="btn btn-success" value="确 定" onclick="art.dialog.close();" />
+	</div>
+</div>
+
+<script type="text/javascript">
+//选择主题
+function changeTheme()
+{
+	var theme = $('[name="sellerTheme"]').val();
+	$.getJSON("{url:/seller/decorate_setting}",{"theme":theme});
+}
+</script>
+</body>
+</html>
